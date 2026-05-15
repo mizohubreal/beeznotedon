@@ -965,7 +965,7 @@ local function doFixLag()
     local TABS = {
         {label="📝 Note",   idx=1},
         {label="📊 Status", idx=2},
-        {label="⚙️ Tool",   idx=3},
+        {label="⚙️ Setting",   idx=3},
         {label="🔗 Job",    idx=4},
         {label="🎨 UI",     idx=5},
     }
