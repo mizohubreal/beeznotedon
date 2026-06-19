@@ -1,5 +1,5 @@
 -- ╔══════════════════════════════════════╗
--- ║      BeeZ Fix Lag + Notes UI v3      ║
+-- ║        Mizo Fix Lag + Notes UI       ║
 -- ╚══════════════════════════════════════╝
 local Players       = game:GetService("Players")
 local RunService    = game:GetService("RunService")
@@ -13,7 +13,7 @@ local playerGui     = player:WaitForChild("PlayerGui")
 --              LOADING UI
 -- ═══════════════════════════════════════
 local loadGui = Instance.new("ScreenGui", playerGui)
-loadGui.Name = "BeeZLoading"
+loadGui.Name = "MizoLoading"
 loadGui.ResetOnSpawn = false
 
 local frame = Instance.new("Frame", loadGui)
@@ -39,7 +39,7 @@ local titleLabel = Instance.new("TextLabel", frame)
 titleLabel.Size = UDim2.new(1, 0, 0, 38)
 titleLabel.Position = UDim2.new(0, 0, 0, 8)
 titleLabel.BackgroundTransparency = 1
-titleLabel.Text = "⚡ BeeZ Fix Lag"
+titleLabel.Text = "⚡ Mizo Fix Lag"
 titleLabel.TextColor3 = Color3.fromRGB(255, 215, 0)
 titleLabel.Font = Enum.Font.GothamBold
 titleLabel.TextSize = 22
@@ -92,7 +92,7 @@ task.spawn(function()
 end)
 
 -- ═══════════════════════════════════════
---               FIX LAG
+--                FIX LAG
 -- ═══════════════════════════════════════
 local function doFixLag()
     statusLabel.Text = "💡 Đang xử lý Lighting..."
@@ -159,7 +159,7 @@ local function doFixLag()
         task.defer(function() ultraClean(obj) end)
     end)
 
-    statusLabel.Text = "✅ Hoàn tất! BeeZ đã sẵn sàng"
+    statusLabel.Text = "✅ Hoàn tất! Mizo đã sẵn sàng"
     task.wait(0.6)
 
     local tw = TweenService:Create(frame, TweenInfo.new(0.4), {
@@ -173,10 +173,10 @@ local function doFixLag()
     loadGui:Destroy()
 
     -- ═══════════════════════════════════════
-    --           MINI FPS COUNTER
+    --            MINI FPS COUNTER
     -- ═══════════════════════════════════════
     local fpsGui = Instance.new("ScreenGui", playerGui)
-    fpsGui.Name = "BeeZ_FPS"
+    fpsGui.Name = "Mizo_FPS"
     fpsGui.ResetOnSpawn = false
     fpsGui.DisplayOrder = 10
 
@@ -218,7 +218,7 @@ local function doFixLag()
     end)
 
     -- ═══════════════════════════════════════
-    --           SERVICES & CONFIG
+    --            SERVICES & CONFIG
     -- ═══════════════════════════════════════
     local Players2       = game:GetService("Players")
     local player2        = Players2.LocalPlayer
@@ -258,10 +258,10 @@ local function doFixLag()
     local function getC() return themeList[currentThemeIdx].color end
 
     -- ═══════════════════════════════════════
-    --           MAIN GUI BUILD
+    --            MAIN GUI BUILD
     -- ═══════════════════════════════════════
     local gui = Instance.new("ScreenGui", playerGui2)
-    gui.Name = "BeeZ_Notes"
+    gui.Name = "Mizo_Notes"
     gui.ResetOnSpawn = false
     gui.DisplayOrder = 5
 
@@ -320,7 +320,7 @@ local function doFixLag()
     titleText.Size = UDim2.new(1, -16, 1, 0)
     titleText.Position = UDim2.new(0, 14, 0, 0)
     titleText.BackgroundTransparency = 1
-    titleText.Text = "🐝 BeeZ Notes"
+    titleText.Text = "📝 Mizo Note"
     titleText.TextColor3 = getC()
     titleText.Font = Enum.Font.GothamBold
     titleText.TextSize = cfg0.titleSize
@@ -470,9 +470,9 @@ local function doFixLag()
 
     -- Status cycle
     local statusStates = {
-        {text="🔴  Chưa nhận",        color=Color3.fromRGB(200,50,50)},
+        {text="🔴  Chưa nhận",       color=Color3.fromRGB(200,50,50)},
         {text="🟡  Đang cày",          color=Color3.fromRGB(220,160,0)},
-        {text="🟢  Hoàn thành",        color=Color3.fromRGB(50,200,80)},
+        {text="🟢  Hoàn thành",       color=Color3.fromRGB(50,200,80)},
         {text="💰  Chờ thanh toán",    color=Color3.fromRGB(60,160,255)},
     }
     local curStatus = 1
@@ -803,317 +803,131 @@ local function doFixLag()
     jobBox.BorderSizePixel = 0
     jobBox:SetAttribute("scalable",true)
 
-    -- Action buttons row
-    local joinBtn4 = mkBtn(p4, "🚀  Join Server", 0, 62, 140, 30,
-        Color3.fromRGB(255,215,0), Color3.fromRGB(0,0,0))
-    joinBtn4.BackgroundTransparency = 0.05
-    joinBtn4.MouseButton1Click:Connect(function()
-        local id = jobBox.Text
-        if id ~= "" and id ~= game.JobId then
-            joinBtn4.Text = "⏳ Đang chuyển..."
-            pcall(function() TeleportSvc:TeleportToPlaceInstance(game.PlaceId, id, player2) end)
-            task.wait(3); joinBtn4.Text = "🚀  Join Server"
+    local joinBtn = mkBtn(p4, "🔗 Vào Server", 0, 64, 130, 30, getC(), Color3.fromRGB(8,8,12))
+    table.insert(colorRefreshList, {joinBtn, "BackgroundColor3"})
+    joinBtn.MouseButton1Click:Connect(function()
+        local id = string.gsub(jobBox.Text, "%s+", "")
+        if #id > 5 then
+            joinBtn.Text = "⏳ Đang kết nối..."
+            pcall(function()
+                TeleportSvc:TeleportToPlaceInstance(game.PlaceId, id, player2)
+            end)
+            task.wait(2)
+            joinBtn.Text = "🔗 Vào Server"
         end
     end)
 
-    local copyJob4 = mkBtn(p4, "📋  Copy", 146, 62, 90, 30)
-    local cj4Str = Instance.new("UIStroke",copyJob4)
-    cj4Str.Color=getC(); cj4Str.Thickness=1
-    table.insert(colorRefreshList,{cj4Str,"Color"})
-    copyJob4.MouseButton1Click:Connect(function()
-        if setclipboard then
-            setclipboard(game.JobId)
-            copyJob4.Text="✅ OK!"; task.wait(1.5); copyJob4.Text="📋  Copy"
-        end
-    end)
-
-    -- Current Job ID (read-only label)
-    mkLabel(p4, "🔑  Job ID hiện tại:", 100, true, Color3.fromRGB(130,130,140))
-
-    local jobDisplayCard, _ = mkCard(p4, 120, 30)
-    local jobDisplayLbl = Instance.new("TextLabel", jobDisplayCard)
-    jobDisplayLbl.Size = UDim2.new(1,-10,1,0)
-    jobDisplayLbl.Position = UDim2.new(0,8,0,0)
-    jobDisplayLbl.BackgroundTransparency = 1
-    jobDisplayLbl.TextColor3 = getC()
-    jobDisplayLbl.Text = game.JobId
-    jobDisplayLbl.Font = Enum.Font.Gotham
-    jobDisplayLbl.TextSize = 10
-    jobDisplayLbl.TextXAlignment = Enum.TextXAlignment.Left
-    jobDisplayLbl.TextTruncate = Enum.TextTruncate.AtEnd
-    table.insert(colorRefreshList,{jobDisplayLbl,"TextColor3"})
-
-    p4.CanvasSize = UDim2.new(0,0,0,158)
+    p4.CanvasSize = UDim2.new(0,0,0,110)
 
     -- ════════════════════════════════
-    --   PAGE 5 · 🎨 UI SETTINGS
+    --   PAGE 5 · 🎨 CUSTOM / GIAO DIỆN
     -- ════════════════════════════════
     local p5 = pages[5]
 
-    -- Size section
-    local szLbl = mkLabel(p5, "📐  Kích cỡ UI", 0, true, getC())
-    table.insert(colorRefreshList,{szLbl,"TextColor3"})
+    -- Theme section
+    mkLabel(p5, "🎨  Chọn Màu Chủ Đề", 0, true, getC())
+    local themeGrid = Instance.new("UIGridLayout", p5)
+    themeGrid.CellSize = UDim2.new(0, 78, 0, 26)
+    themeGrid.CellPadding = UDim2.new(0, 6, 0, 6)
+    themeGrid.SortOrder = Enum.SortOrder.LayoutOrder
 
-    for i, cfg in ipairs(sizeConfig) do
-        local xOff = (i-1) * 86
-        local sb = Instance.new("TextButton", p5)
-        sb.Size = UDim2.new(0, 80, 0, 30)
-        sb.Position = UDim2.new(0, xOff, 0, 22)
-        sb.Text = cfg.icon .. "  " .. cfg.key
-        sb.Font = Enum.Font.GothamBold
-        sb.TextSize = 10
-        sb.BorderSizePixel = 0
-        Instance.new("UICorner", sb).CornerRadius = UDim.new(0, 8)
-        local sbStr = Instance.new("UIStroke", sb)
-        sbStr.Thickness = 2
-        sizeBtns[i] = {btn=sb, str=sbStr}
+    local themeContainer = Instance.new("Frame", p5)
+    themeContainer.Size = UDim2.new(1, 0, 0, 70)
+    themeContainer.Position = UDim2.new(0, 0, 0, 22)
+    themeContainer.BackgroundTransparency = 1
+    themeGrid.Parent = themeContainer
+
+    for idx, t in ipairs(themeList) do
+        local tBtn = mkBtn(themeContainer, t.key, 0, 0, 78, 26, Color3.fromRGB(20,20,25))
+        local tStr = Instance.new("UIStroke", tBtn)
+        tStr.Color = t.color
+        tStr.Thickness = 1.5
+        tBtn.MouseButton1Click:Connect(function()
+            applyTheme(idx)
+        end)
     end
 
-    -- Define refreshSizeBtns
-    refreshSizeBtns = function()
-        for i, info in ipairs(sizeBtns) do
-            local active = (i == currentSizeIdx)
-            local c = getC()
-            if active then
-                info.btn.BackgroundColor3 = c
-                info.btn.BackgroundTransparency = 0.05
-                info.btn.TextColor3 = Color3.fromRGB(0,0,0)
-                info.str.Color = c
-                info.str.Transparency = 0
+    -- Size section
+    local sizeTitle = mkLabel(p5, "📏  Kích Thước Cửa Sổ", 100, true, getC())
+    table.insert(colorRefreshList, {sizeTitle, "TextColor3"})
+
+    local sizeContainer = Instance.new("Frame", p5)
+    sizeContainer.Size = UDim2.new(1, 0, 0, 35)
+    sizeContainer.Position = UDim2.new(0, 0, 0, 122)
+    sizeContainer.BackgroundTransparency = 1
+
+    function refreshSizeBtns()
+        for idx, btn in ipairs(sizeBtns) do
+            if idx == currentSizeIdx then
+                btn.BackgroundColor3 = getC()
+                btn.TextColor3 = Color3.fromRGB(8,8,12)
             else
-                info.btn.BackgroundColor3 = Color3.fromRGB(40,40,50)
-                info.btn.BackgroundTransparency = 0.1
-                info.btn.TextColor3 = Color3.fromRGB(120,120,130)
-                info.str.Color = Color3.fromRGB(60,60,70)
-                info.str.Transparency = 0
+                btn.BackgroundColor3 = Color3.fromRGB(20,20,25)
+                btn.TextColor3 = Color3.fromRGB(200,200,200)
             end
         end
+    end
+
+    for idx, s in ipairs(sizeConfig) do
+        local sBtn = mkBtn(sizeContainer, s.icon .. " " .. s.key, (idx-1)*92, 0, 86, 28, Color3.fromRGB(20,20,25))
+        sizeBtns[idx] = sBtn
+        sBtn.MouseButton1Click:Connect(function()
+            applySize(idx)
+            refreshSizeBtns()
+        end)
     end
     refreshSizeBtns()
 
-    for i, info in ipairs(sizeBtns) do
-        info.btn.MouseButton1Click:Connect(function()
-            applySize(i); refreshSizeBtns()
-        end)
-    end
+    p5.CanvasSize = UDim2.new(0,0,0,165)
 
-    mkSep(p5, 58)
-
-    -- Color section
-    local clrLbl = mkLabel(p5, "🎨  Màu sắc", 65, true, getC())
-    table.insert(colorRefreshList,{clrLbl,"TextColor3"})
-
-    local colorBtnMap = {}
-    for i, theme in ipairs(themeList) do
-        local row = math.ceil(i/4)
-        local col = (i-1) % 4
-        local cb = Instance.new("TextButton", p5)
-        cb.Size = UDim2.new(0, 58, 0, 28)
-        cb.Position = UDim2.new(0, col*62, 0, 84 + (row-1)*34)
-        cb.BackgroundColor3 = theme.color
-        cb.BackgroundTransparency = 0.1
-        cb.Text = theme.key
-        cb.Font = Enum.Font.GothamBold
-        cb.TextSize = 9
-        cb.BorderSizePixel = 0
-        cb.TextColor3 = Color3.fromRGB(0,0,0)
-        Instance.new("UICorner", cb).CornerRadius = UDim.new(0, 7)
-        local cbStr = Instance.new("UIStroke", cb)
-        cbStr.Thickness = 2
-        cbStr.Color = Color3.fromRGB(0,0,0)
-        cbStr.Transparency = 0.7
-        colorBtnMap[i] = {btn=cb, str=cbStr}
-    end
-
-    local function refreshColorBtns()
-        for i, info in ipairs(colorBtnMap) do
-            if i == currentThemeIdx then
-                info.str.Color = Color3.fromRGB(255,255,255)
-                info.str.Transparency = 0
-                info.btn.BackgroundTransparency = 0.0
+    -- ════════════════════════════════
+    --        TAB SYSTEM LOGIC
+    -- ════════════════════════════════
+    local tabNames = {"📝 Note", "📊 Thống Kê", "⚙️ Cài Đặt", "🔗 Job ID", "🎨 Giao Diện"}
+    
+    local function switchTab(idx)
+        for i, page in ipairs(pages) do
+            page.Visible = (i == idx)
+        end
+        for i, btn in ipairs(tabBtns) do
+            if i == idx then
+                btn.TextColor3 = getC()
+                TweenService:Create(tabIndicator, TweenInfo.new(0.2, Enum.EasingStyle.Quad), {
+                    Position = UDim2.new((idx-1)/5, 2, 1, -2)
+                }):Play()
             else
-                info.str.Color = Color3.fromRGB(0,0,0)
-                info.str.Transparency = 0.7
-                info.btn.BackgroundTransparency = 0.25
+                btn.TextColor3 = Color3.fromRGB(140, 140, 150)
             end
         end
-        refreshSizeBtns()
     end
-    refreshColorBtns()
 
-    for i, info in ipairs(colorBtnMap) do
-        info.btn.MouseButton1Click:Connect(function()
-            applyTheme(i); refreshColorBtns()
+    for i, name in ipairs(tabNames) do
+        local btn = Instance.new("TextButton", tabBar)
+        btn.Size = UDim2.new(1/5, 0, 1, -2)
+        btn.Position = UDim2.new((i-1)/5, 0, 0, 0)
+        btn.BackgroundTransparency = 1
+        btn.Text = name
+        btn.Font = Enum.Font.GothamBold
+        btn.TextSize = cfg0.tabSize
+        btn.TextColor3 = Color3.fromRGB(140, 140, 150)
+        tabBtns[i] = btn
+
+        btn.MouseButton1Click:Connect(function()
+            switchTab(i)
         end)
     end
 
-    -- Current color label
-    local curClrLbl = mkLabel(p5, "", 158, false)
-    task.spawn(function()
-        while gui.Parent do
-            curClrLbl.Text = "✨  Màu hiện tại: " .. themeList[currentThemeIdx].key
-            curClrLbl.TextColor3 = getC()
-            task.wait(0.3)
+    switchTab(1)
+    applySize(1)
+
+    -- Toggle UI Keybind (mở/đóng nhanh bằng nút Insert)
+    UIS.InputBegan:Connect(function(input, gpe)
+        if not gpe and input.KeyCode == Enum.KeyCode.Insert then
+            gui.Enabled = not gui.Enabled
+            fpsGui.Enabled = gui.Enabled
         end
     end)
-
-    p5.CanvasSize = UDim2.new(0, 0, 0, 178)
-
-    -- ════════════════════════════════
-    --      TABS WITH ICONS
-    -- ════════════════════════════════
-    local TABS = {
-        {label="📝 Note",   idx=1},
-        {label="📊 Status", idx=2},
-        {label="⚙️ Setting",   idx=3},
-        {label="🔗 Job",    idx=4},
-        {label="🎨 UI",     idx=5},
-    }
-
-    for i, tab in ipairs(TABS) do
-        local b = Instance.new("TextButton", tabBar)
-        b.Size = UDim2.new(1/#TABS, 0, 1, 0)
-        b.Position = UDim2.new((i-1)/#TABS, 0, 0, 0)
-        b.Text = tab.label
-        b.BackgroundTransparency = 1
-        b.Font = Enum.Font.GothamBold
-        b.TextSize = cfg0.tabSize
-        b.TextColor3 = Color3.fromRGB(120, 120, 130)
-        tabBtns[i] = b
-
-        b.MouseButton1Click:Connect(function()
-            for j = 1, #TABS do
-                pages[j].Visible = false
-                tabBtns[j].TextColor3 = Color3.fromRGB(120,120,130)
-            end
-            pages[i].Visible = true
-            b.TextColor3 = getC()
-            -- Slide indicator
-            TweenService:Create(tabIndicator, TweenInfo.new(0.2, Enum.EasingStyle.Quad), {
-                Position = UDim2.new((i-1)/#TABS, 2, 1, -2)
-            }):Play()
-            tabIndicator.BackgroundColor3 = getC()
-        end)
-    end
-
-    -- Keep active tab color synced to theme
-    task.spawn(function()
-        while gui.Parent do
-            for i, pg in ipairs(pages) do
-                if pg.Visible then
-                    tabBtns[i].TextColor3 = getC()
-                    tabIndicator.BackgroundColor3 = getC()
-                end
-            end
-            task.wait(0.3)
-        end
-    end)
-
-    pages[1].Visible = true
-    tabBtns[1].TextColor3 = getC()
-
-    -- ════════════════════════════════
-    --   TOGGLE BUTTON (DRAGGABLE)
-    -- ════════════════════════════════
-    local toggle = Instance.new("TextButton", gui)
-    toggle.Size = UDim2.new(0, 62, 0, 62)
-    toggle.Position = UDim2.new(0, 20, 1, -82)
-    toggle.BackgroundColor3 = Color3.fromRGB(8, 8, 12)
-    toggle.BackgroundTransparency = 0.1
-    toggle.Text = ""
-    toggle.BorderSizePixel = 0
-    toggle.Active = true
-    toggle.ClipsDescendants = true
-    Instance.new("UICorner", toggle).CornerRadius = UDim.new(1, 0)
-
-    local tgStr = Instance.new("UIStroke", toggle)
-    tgStr.Thickness = 2.5
-    tgStr.Color = getC()
-    table.insert(colorRefreshList, {tgStr, "Color"})
-
-    -- Gradient border on toggle
-    local tgGrad = Instance.new("UIGradient", tgStr)
-    tgGrad.Color = ColorSequence.new({
-        ColorSequenceKeypoint.new(0,   getC()),
-        ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255,255,255)),
-        ColorSequenceKeypoint.new(1,   getC()),
-    })
-    task.spawn(function()
-        local r = 0
-        while toggle.Parent do
-            r = (r + 2) % 360
-            tgGrad.Rotation = r
-            local c = getC()
-            tgGrad.Color = ColorSequence.new({
-                ColorSequenceKeypoint.new(0, c),
-                ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255,255,255)),
-                ColorSequenceKeypoint.new(1, c),
-            })
-            task.wait(0.03)
-        end
-    end)
-
-    local tgIcon = Instance.new("ImageLabel", toggle)
-    tgIcon.Size = UDim2.new(0.72, 0, 0.72, 0)
-    tgIcon.Position = UDim2.new(0.14, 0, 0.14, 0)
-    tgIcon.BackgroundTransparency = 1
-    tgIcon.Image = "rbxassetid://135314302105271"
-    tgIcon.ScaleType = Enum.ScaleType.Fit
-
-    -- ── Drag logic ──
-    local dragging   = false
-    local dragStart  = nil
-    local dragOrigin = nil
-    local wasMoved   = false
-
-    toggle.InputBegan:Connect(function(inp)
-        if inp.UserInputType == Enum.UserInputType.MouseButton1
-        or inp.UserInputType == Enum.UserInputType.Touch then
-            dragging   = true
-            wasMoved   = false
-            dragStart  = inp.Position
-            dragOrigin = Vector2.new(toggle.Position.X.Offset, toggle.Position.Y.Offset)
-        end
-    end)
-
-    UIS.InputChanged:Connect(function(inp)
-        if not dragging then return end
-        if inp.UserInputType == Enum.UserInputType.MouseMovement
-        or inp.UserInputType == Enum.UserInputType.Touch then
-            local delta = inp.Position - dragStart
-            if delta.Magnitude > 4 then wasMoved = true end
-            local newX = math.clamp(dragOrigin.X + delta.X, 0,
-                workspace.CurrentCamera.ViewportSize.X - 62)
-            local newY = math.clamp(dragOrigin.Y + delta.Y, 0,
-                workspace.CurrentCamera.ViewportSize.Y - 62)
-            toggle.Position = UDim2.new(0, newX, 0, newY)
-        end
-    end)
-
-    UIS.InputEnded:Connect(function(inp)
-        if inp.UserInputType == Enum.UserInputType.MouseButton1
-        or inp.UserInputType == Enum.UserInputType.Touch then
-            dragging = false
-        end
-    end)
-
-    local mainVisible = true
-    toggle.MouseButton1Click:Connect(function()
-        if wasMoved then return end
-        mainVisible = not mainVisible
-        if mainVisible then
-            main.Visible = true
-            TweenService:Create(main, TweenInfo.new(0.2), {
-                BackgroundTransparency = 0.08
-            }):Play()
-        else
-            TweenService:Create(main, TweenInfo.new(0.15), {
-                BackgroundTransparency = 1
-            }):Play()
-            task.delay(0.15, function() main.Visible = false end)
-        end
-    end)
-
 end
 
+-- Chạy Loading trước rồi tự động khởi động các chức năng chính
 task.spawn(doFixLag)
